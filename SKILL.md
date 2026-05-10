@@ -1,0 +1,231 @@
+---
+name: knowledge-retrieval
+skillsets: [retrieval, search]
+homepage: https://github.com/kittitys/knowledge-retrieval
+description: >
+  A local-first document search skill with PPT/PDF support, dual-channel
+  retrieval (keyword + AI semantic), and progressive description evolution.
+  Designed for knowledge workers with years of local files.
+  
+  给知识工作者和顾问的本地文件检索方案。支持 PPT/PDF 多格式、BM25+AI
+  双通道搜索、越用越聪明。适合手里有大量本地文档、不想搬上云的人。
+---
+
+# Knowledge Retrieval — 本地知识库检索 Skill
+
+> A local-first document search skill for knowledge workers and consultants.
+> Handles PPT/PDF/DOCX in place, searches with keyword + AI dual-channel,
+> gets smarter with use. No cloud upload needed.
+>
+> 给知识工作者和顾问的本地文件检索方案。支持 PPT/PDF 等多格式、
+> 关键词+AI 双通道搜索、越用越聪明。本地运行，不搬上云。
+
+## Features / 功能亮点
+
+### 📄 读得懂你的真实文件格式 / Reads your actual files
+
+Most search tools only support plain text — your PPTs and PDFs get ignored. This skill reads them directly: PPTX (with nested shapes and speaker notes), PDF (dual-engine fallback), DOCX, XLSX, images, plus all text formats. Files are processed in place — your original folder is never modified. Non-text file caches are stored in a separate working directory, never mixed into your source files. **WPS formats (.wps / .et / .dps):** Compatible if saved as Office formats. Native WPS support is available via `pip install pywpsrpc` (requires WPS Office installed).
+
+市面上多数搜索方案只支持纯文本，PPT 和 PDF 直接被跳过。本 SKILL 直接读取它们：PPTX（含嵌套图形和备注页）、PDF（双引擎兜底）、DOCX、XLSX、图片，以及所有文本格式。文件原地读取，原文件夹不受影响。非纯文本文件的提取缓存存放在独立的 skill 工作目录中，不和原文件夹混在一起。**WPS 格式（.wps / .et / .dps）：** 如果已保存为 Office 兼容格式，直接支持 ✅。原生 WPS 格式可通过 `pip install pywpsrpc` 启用（需电脑已装 WPS Office）。
+
+### 🏠 本地优先 / Local-first
+
+Your documents stay on your machine. The index is built locally. Nothing is uploaded anywhere — no cloud dependency, no privacy risk. For consultants working with client materials, this isn't just convenient, it's a compliance requirement. Cloud-synced folders (OneDrive, etc.) also work — files are auto-downloaded when first indexed. Internet is required for the initial build; after that, everything runs locally with cached copies.
+
+所有文档和索引都在本地机器上，不依赖任何云端服务，没有隐私风险。对处理客户材料的顾问来说，这不是偏好问题——是合规底线。也支持 OneDrive 等网盘文件，首次建索引时自动下载，之后本地缓存运行，不需要持续联网。
+
+### 🔄 动态更新 / Dynamic updates
+
+Your knowledge base changes every day — new files arrive, old ones get revised. This skill detects changes automatically: new files are discovered on the next search, modified files get their descriptions refreshed, deleted files are removed from the index. No need to rebuild the entire index after every change. Most tools are "initialized and frozen". This one evolves with your files.
+
+知识库每天都在变化——新文件加入、旧文件修改、过时文件删除。本 SKILL 自动感知变化：新文件下次搜索自动发现，旧文件描述自动刷新，已删除文件自动从索引移除。不需要每次改完文件都跑一次完整重建。大多数方案初始化即定型，这个 SKILL 与你的文件一起进化。
+
+### 🎯 关键词 + 自然语言 / Keywords + natural language
+
+Pure keyword search fails when the same concept uses different wording (searching "ROI" won't find files titled "投资回报率"). Pure semantic search is fuzzy and requires maintaining a vector database. Our approach: AI first expands your query into up to 20 synonyms, then hands it to a lightweight keyword index for precision matching. The AI semantic channel cross-checks the results as a safety net. Two channels, one combined result — you don't need to guess what words the author used.
+
+纯关键词搜索的痛点：同一个概念在不同文件里措辞不同（搜「TRL」找不到标题为「技术成熟度评估」的文件）。纯语义搜索需要维护向量库、模糊查询容易跑偏。我们的方式：AI 先将你的搜索词扩展为最多 20 个同义词，再交给轻量关键词索引精确命中，最后 AI 语义通道再做一次判断兜底。两条通道合并输出——你不需要记住文件里用的具体是什么词，只要概念是对的就能找到。
+
+### 📈 越用越聪明 / Gets smarter with use
+
+Traditional search skills build their index once during initialization and never improve. This one only builds the minimal index on first use. Every time a file is read during a search, AI extracts 3-5 key phrases and appends them to the file's description. Over time: most-searched files get the richest descriptions (highest hit rate), rarely-accessed files don't waste preprocessing, and your actual search patterns gradually shape the index to serve you better. The quality ceiling rises with every search.
+
+传统方案初始化建完索引后搜索质量就固定了，不会再提升。本 SKILL 第一次搜索时只建最基础的索引。每次搜到一个文件，AI 读完内容后提取 3-5 个关键词自动补充到文件描述中。长期效果：最常被搜的文件描述最丰富、命中率最高；不常搜的文件不浪费预处理时间；你的搜索习惯逐渐塑造出对你最友好的索引。搜索质量的**天花板随使用次数持续抬升**。
+
+### 🛡️ 配置不全也能跑 / Graceful degradation
+
+No PDF library installed? Search still runs — PDF files just won't be found this time. BM25 index corrupted? Falls back to pure AI semantic matching automatically. No matching files at all? AI honestly reports nothing found — no hallucination. Every failure path has a defined fallback behavior. You don't need to worry about the tool's imperfections; it handles them itself.
+
+没装 PDF 库？搜索仍能运行，只是 PDF 文件暂时搜不到。BM25 索引丢了？自动降级到纯 AI 语义匹配，不会卡住。没有一个匹配文件？AI 诚实告诉你没找到，不会编造答案。每一条故障路径都有明确的降级行为。你不需要为工具的不完美焦虑，它自己会扛。
+
+## 性能预期 / Performance
+
+基于真实测试数据（非理论值）的预估：
+
+| 场景 | 文件规模 | 首次耗时 | 后续 |
+|------|---------|---------|------|
+| 知识库初始化 | 120 文件（PPT/PDF/DOCX 混合，典型顾问项目） | 约 3-8 分钟 | 增量更新秒级 |
+| 知识库初始化 | 10-20 文件 | 约 30 秒-1 分钟 | 增量更新秒级 |
+| 单次搜索 | 不限 | 5-30 秒 | — |
+| 命中大文件 | 单个 PDF/PPT > 50 页 | 额外 10-30 秒 | — |
+
+咨询顾问的项目里经常有几十页的 PDF 和上百页的 PPT——这类文件读取确实需要时间，不是 skill 有问题，是文件本身信息密度高。首次建索引时建议泡杯咖啡 🍵，日常搜索很快。
+
+Based on real-world testing (not theoretical estimates): a typical consultant project with 120 mixed PPT/PDF/DOCX files takes ~3-8 minutes for the first index build. Incremental updates are instant. Single searches take 5-30 seconds (longer if they find 50+ page files — that's the file's density, not the skill's slowness).
+
+## Install / 安装
+
+```bash
+openclaw skills install local-knowledge-retrieval
+```
+
+## Requirements / 环境
+
+```bash
+pip install bm25s pdfminer.six python-pptx
+```
+
+## Platform / 系统兼容
+
+- **Windows:** Full features (including OneDrive auto-download)
+- **macOS / Linux:** Core search works fully
+- **Shell:** Windows (`dir /b` / `Select-String`), Mac (`ls` / `grep`)
+
+---
+
+*Below this line is the AI instruction set. Human readers can stop here.*
+*以下为 AI 指令集，人类读者可到此为止。*
+
+<skill_instructions>
+
+# knowledge 知识库检索 Skill
+
+> 版本：v3.0（三层架构重构） | 2026-05-08
+> 理念：零预处理、懒加载、渐进式检索
+> 工作流：Phase 0（环境就绪）→ Phase A（定位文件）→ Phase B（阅读回答）
+
+---
+
+## 一、调用时机
+
+**应主动调用：** ✅
+- 用户提到知识库中的具体文件、文档、报告名称
+- 用户问制度、政策、标准、规范类问题
+- 用户问数据来源、出处、依据
+- 用户用自然语言描述信息需求，需从文件集合中定位
+
+**勿调用：** ❌
+- 闲聊、开放性问题
+- 用户明确要求用预训练知识回答
+- 一般性编程 / Chat 类问题
+
+**多轮注意：** 每一轮都重新判断「这个问题属于检索范畴吗？」，不得在多轮后习惯性切回预训练知识。
+
+**显式维护指令：** ✅
+当用户明确说出「修复知识库」「重建索引」「更新知识库」「重新初始化」等指令时：
+→ 重建 BM25 索引：执行 `python .agents/skills/knowledge-retrieval/scripts/build_kb_index.py --project <项目名>`
+→ 完整重跑 Stage 0：按 `references/knowledge-base-conventions.md` 的 Stage 0 完整流程执行（重新扫描、生成 data_structure.md、重建索引、创建快捷方式）
+→ 执行完成后告知用户操作结果
+
+---
+
+## 二、反幻觉铁律（强制执行）
+
+> 优先级高于所有其他操作指令。
+
+1. **搜不到就是搜不到。** Phase A 零候选时，如实告知用户，不得用预训练知识填充或编造。
+2. **搜不全就说不全。** 读了部分文件但不足以回答全部问题时，如实说明「已覆盖 X 方面，Y 方面未覆盖」，不做推测回答。
+3. **预训练知识不能替代检索结果。** 即使预训练知识与文件原文一致，也以文件原文为准。有差异时如实报告差异，不做修正。
+4. **诚实第一，有用第二。** 一个诚实的「没找到」比一个漂亮的「我猜的」更有价值。违背此项导致幻觉视为严重违规。
+5. **读取失败如实说。** 文件损坏、读取超时、内容为空时，如实告知用户「该文件无法正常读取」，不得猜测其内容或编造。
+
+---
+
+## 三、流程总览（快速导航）
+
+本 Skill 有两个入口，取决于用户意图：
+
+```
+入口 A：用户说「帮我建个知识库」或进入一个新项目
+  │
+  Stage 0 — 知识库初始化（一次性）
+    ├ 创建 workspace 目录
+    ├ 扫描原始文件夹 → 生成 data_structure.md
+    ├ 构建 BM25 索引
+    └ 创建双向快捷方式
+    └→ 完成后可进入搜索流程
+
+入口 B：用户问了一个问题
+  │
+  Phase 0 — 搜索环境就绪检查
+  ├─ 原始文件夹还在吗？
+  ├─ 文件索引和磁盘一致吗？
+  └─ BM25 索引需要刷新吗？
+    │
+  Phase A — 定位目标文件（双通道）
+  ├─ 通道①：AI 语义匹配（读描述列）
+  ├─ 通道②：BM25 算法搜索
+  └─ 合并去重 → Top 10 候选
+    │
+  Phase B — 阅读 + 回答 + 描述进化
+  ├─ 读候选文件 → 定位相关段落
+  ├─ 综合理解 → 回答
+  └─ 读完顺手更新文件描述
+```
+
+**Stage 0 详情 → `references/knowledge-base-conventions.md`**
+**Phase 0/A/B 详情 → `references/phase-execution.md`**
+
+---
+
+## 四、关键决策点（执行时在此自检）
+
+> BM25 环境已由 Phase 0 自动检测并安装，无需在此分支判断。
+
+### 决策 1：是否有 > 5 万字的候选文件？
+→ ✅ 无 → Phase B 正常模式（顺序读取候选文件）
+→ ✅ 有 → Phase B 切换大文件保护模式（关键词搜索→命中段落阅读）
+
+**[自检] 候选文件的累计大小是否接近上下文容量的 70%？是则提前切换策略。**
+
+### 决策 2：Phase A 零候选？
+→ 执行反幻觉铁律第 1 条：如实告知用户「没有匹配的内容」
+→ 不得用预训练知识填充
+
+**[自检] 我确认了零候选，还是我跳过了验证步骤就回答了？**
+
+### 决策 3：原始文件夹有新增/删除文件？
+→ Phase 0 检查时发现差异 → 自动更新 data_structure.md → 标记 BM25 为 stale
+→ 下次走 Phase A 时自动重建索引
+
+**[自检] 我确认了索引新鲜度，还是直接用旧索引搜索了？**
+
+### 决策 4：Phase B 读完文件后，描述列更新了吗？
+→ 已更新 → 下一题
+→ 未更新 → 立即执行描述进化（详见 `references/phase-execution.md` → 描述进化）
+
+**[自检] 我确认了刚读的文件的描述已更新，还是以为「下次会记得」就跳过了？**
+
+---
+
+## 五、降级规则摘要
+
+| 条件 | 行为 | 详情 |
+|------|------|------|
+| 候选大文件 | Phase B 切关键词搜索模式 | `references/phase-execution.md` |
+| 扫描件 PDF | OCR 处理 + 缓存 | `references/file-handling.md → 2.2` |
+| 无图像分析能力 | 跳过图片分析，标注能力限制 | `references/degradation.md` |
+
+---
+
+## 六、文件索引相关
+
+- 知识库目录规范 → `references/knowledge-base-conventions.md`
+- 环境安装 → `references/environment-setup.md`
+- 数据流及工具生态 → 各 `references/` 文件对应章节
+
+---
+
+*快速参考：本节仅含流程骨架和决策自检点。所有详细操作步骤见 `references/` 目录下对应文件。*
+
+</skill_instructions>
