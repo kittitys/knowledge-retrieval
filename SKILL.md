@@ -30,9 +30,17 @@ Most search tools only support plain text — your PPTs and PDFs get ignored. Th
 
 ### 🏠 本地优先 / Local-first
 
-Your documents stay on your machine. The index is built locally. Nothing is uploaded anywhere — no cloud dependency, no privacy risk. For consultants working with client materials, this isn't just convenient, it's a compliance requirement. Cloud-synced folders (OneDrive, etc.) also work — files are auto-downloaded when first indexed. Internet is required for the initial build; after that, everything runs locally with cached copies.
+Your documents stay on your machine. All text search is built and runs 100% locally — no content is ever uploaded to any cloud service. 
 
-所有文档和索引都在本地机器上，不依赖任何云端服务，没有隐私风险。对处理客户材料的顾问来说，这不是偏好问题——是合规底线。也支持 OneDrive 等网盘文件，首次建索引时自动下载，之后本地缓存运行，不需要持续联网。
+⚠️ Image analysis note: For documents containing images, basic text extraction is fully local. Advanced visual analysis (describing charts, diagrams, or photos) may optionally use multimodal models. This only happens when explicitly requested — by default, the skill runs entirely offline. See the file-handling reference for details on provider options.
+
+For consultants working with client materials, this means day-to-day keyword and semantic search carries zero external data exposure. Cloud-synced folders (OneDrive, etc.) also work — files are auto-downloaded when first indexed. Internet is required for the initial build; after that, everything runs locally with cached copies.
+
+所有核心搜索功能（关键词检索 + AI 语义匹配）完全在本地运行，不上传任何内容。
+
+⚠️ 图片分析说明：文档中的基础文字提取完全本地完成。高级视觉分析（解读图表、图示或照片）仅在用户明确发起时才可能调用多模态模型。默认情况下，本 SKILL 全程离线运行。详见 file-handling 参考文档。
+
+对处理客户材料的顾问来说，核心搜索的零上传是确定的——这不是偏好问题，是合规底线。也支持 OneDrive 等网盘文件，首次建索引时自动下载，之后本地缓存运行，不需要持续联网。
 
 ### 🔄 动态更新 / Dynamic updates
 
