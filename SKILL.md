@@ -93,6 +93,24 @@ No PDF library installed? Search still runs — PDF files just won't be found th
 **Time factors (slowest to fastest):**
 First-time extraction of large files, images, PDFs, and PPTs >> AI reading & reasoning for complex questions >> Simple fact lookups or file-location searches
 
+### ⏱️ 超时说明
+
+当前 OpenClaw 环境下，子代理分析任务默认 timeout 约 600 秒（10 分钟），主 session 无硬性限制但单步操作也受上下文窗口影响。
+
+**超时风险最高的情况：** 首次建索引时塞入几百个文件（461 文件 + 49 子文件夹 ≈ 12GB 级别），单次 Stage 0 可能跑 30 分钟以上，几乎必然超时。
+
+**推荐的大库策略：**
+1. 按子文件夹**分批建库**，每批不超过 **50 个文件或 500MB**
+2. 每批独立跑一次建索引命令，各批的索引互不冲突
+3. 搜索时会自动对所有子目录逐一扫描并合并结果
+4. 大文件（> 50 页 PPT/PDF）可单独提取，不从属于批量任务
+
+示例：49 个子文件夹分 10 批执行，每批 5 分钟 → 总计 ~50 分钟，但每步都在 timeout 安全区内。
+
+### ⏱️ Timeout note
+
+The default sub-agent timeout is ~600 seconds (10 minutes). Indexing 461 files in one pass can take 30+ minutes — well beyond the limit. **Split large knowledge bases into batches of ~50 files or 500MB each**, run each batch independently, and search will automatically merge results across all subdirectories.
+
 ## Install / 安装
 
 ```bash
