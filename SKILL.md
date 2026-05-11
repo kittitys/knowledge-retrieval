@@ -147,6 +147,13 @@ pip install bm25s pdfminer.six python-pptx
 → 完整重跑 Stage 0：按 `references/knowledge-base-conventions.md` 的 Stage 0 完整流程执行（重新扫描、生成 data_structure.md、重建索引、创建快捷方式）
 → 执行完成后告知用户操作结果
 
+**显式删除指令：** ❌（仅指引，不执行）
+当用户明确说出「删除知识库」「卸载」「关闭检索」「清理索引缓存」等指令时：
+→ 告知用户：出于本地数据安全考虑，本 SKILL 不执行任何删除操作
+→ 指引用户通过原始文件夹中的 `.shortcut.lnk` 双向链接进入 skill 工作目录
+→ 指导用户手动删除 `.corpus/`（BM25 索引）和 `cache/`（图片分析缓存）目录
+→ 如需彻底移除，按 `references/degradation.md` 的操作说明执行
+
 ---
 
 ## 二、反幻觉铁律（强制执行）
@@ -191,10 +198,18 @@ pip install bm25s pdfminer.six python-pptx
   ├─ 读候选文件 → 定位相关段落
   ├─ 综合理解 → 回答
   └─ 读完顺手更新文件描述
+
+入口 C：用户说「删除知识库」「卸载」「关闭检索」「清理索引缓存」
+  │（仅指引，不执行）
+  ├→ 告知用户：出于本地数据安全考虑，本 SKILL 不执行任何删除操作
+  ├→ 引导用户通过原始文件夹中的 .shortcut.lnk 双向链接进入 skill 工作目录
+  ├→ 指导用户手动删除 .corpus/（BM25 索引）和 cache/（图片分析缓存）
+  └→ 如需彻底移除 → 按 degradation.md 操作说明执行
 ```
 
 **Stage 0 详情 → `references/knowledge-base-conventions.md`**
 **Phase 0/A/B 详情 → `references/phase-execution.md`**
+**缓存清理指引 → `references/degradation.md`**
 
 ---
 

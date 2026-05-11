@@ -52,7 +52,7 @@ def search(project_name: str, query: str, top_k: int = DEFAULT_TOP_K) -> list[di
     if not index_dir.exists():
         # Index missing — auto-rebuild (programmatic enforcement)
         import subprocess, sys
-        build_script = str(WORKSPACE / "scripts" / "build_kb_index.py")
+        build_script = str(Path(__file__).resolve().parent / "build_kb_index.py")
         print(f"  [.] BM25 index not found for '{project_name}', auto-rebuilding...", file=sys.stderr)
         result = subprocess.run(
             [sys.executable, build_script, "--project", project_name],

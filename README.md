@@ -33,6 +33,7 @@
 | DOCX / XLSX | 全文提取 |
 | TXT / MD / CSV | 当然支持 |
 | 图片 | 嵌入文字识别 |
+| WPS（.wps/.et/.dps） | 兼容 Office 格式直接支持；原生 WPS 需 pywpsrpc + WPS Office |
 
 文件原地读取，原文件夹不受任何影响。非纯文本文件（PDF、PPTX、DOCX）的文字提取缓存存放在独立的 skill 工作目录中，不和原文件夹混在一起。
 
