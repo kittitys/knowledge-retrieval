@@ -39,11 +39,9 @@
 
 ### 🔑 本地优先
 
-你的文档在自己电脑上，不用上传到任何云端。知识库索引也建在本地。
+你的原文件、知识库索引和工作缓存均保存在本地，无须提前将文件上传或存储至任何外部平台或云端。在 AI 进行语义解读时，将从本地读取文件内容进行推理和解答。这对很多顾问来说是合规底线——客户材料不能上传第三方平台。
 
-这对很多顾问来说不是偏好问题，是**合规底线**——客户材料不能上传第三方服务。
-
-**也支持网盘文件。** 如果文件存放在 OneDrive 等本地同步盘里，建库和搜索时系统会自动从云端下载。首次建索引需要联网。
+同时也支持 OneDrive 等本地同步类网盘。若文件存放在同步盘中，建库和搜索时系统会自动从云端下载。
 
 ### 🔑 动态更新，改了就能搜到
 
@@ -163,7 +161,9 @@ You, if:
 
 ### Local-first
 
-Your documents stay on your machine. The index is built locally. Nothing is uploaded anywhere.
+Your original files, knowledge base index, and working caches stay on your local machine — no need to upload or store them on any external platform or cloud. When AI performs semantic analysis, it reads from local file content for reasoning and answering. For many consultants this is a compliance requirement — client materials cannot be uploaded to third-party platforms.
+
+Cloud-synced folders (OneDrive, etc.) also work. If files are stored in a sync folder, the system auto-downloads them during indexing and search.
 
 ### Dynamic updates
 
