@@ -66,8 +66,18 @@ df = pd.read_excel("file.xlsx", nrows=10)  # 仅预览表头+前10行
 - 独立图片文件落入候选列表
 
 ### 操作（仅具备视觉能力的 Agent）
+
+> ⚠️ 当当前模型不支持多模态视觉、且搜索结果包含需要解读的图片时，
+> 本 SKILL 可能会根据 agent 的模型配置自动 fallback 到其他模型。
+> 纯文字搜索不会触发此流程。
+> 
+> ⚠️ If the active model doesn't support multimodal vision and search
+> results contain images requiring analysis, this skill may automatically
+> fall back to other models available in the agent's configuration.
+> Text-only search never triggers this path.
+
 1. 从 PDF/PPTX 中提取该页的图片资源，或直接读取图片文件
-2. 执行视觉分析（当前模型自带 / spawn 多模态子代理均可，推荐 Kimi K2.6 → 豆包 → Gemini）
+2. 执行视觉分析（当前模型自带 / spawn 多模态子代理均可，备选模型示例：Kimi K2.6、豆包、Gemini）
 3. 解读结果写入 `cache/<文件名>.img-<页码>.txt`
 4. 后续搜到同一页 → 直接读缓存
 

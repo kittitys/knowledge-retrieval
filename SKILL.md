@@ -30,9 +30,13 @@ Most search tools only support plain text — your PPTs and PDFs get ignored. Th
 
 ### 🏠 本地优先 / Local-first
 
-Your documents stay on your machine. The index is built locally. Nothing is uploaded anywhere — no cloud dependency, no privacy risk. For consultants working with client materials, this isn't just convenient, it's a compliance requirement. Cloud-synced folders (OneDrive, etc.) also work — files are auto-downloaded when first indexed. Internet is required for the initial build; after that, everything runs locally with cached copies.
+Your original files, knowledge base index, and working caches stay on your local machine — never uploaded to any external platform or cloud. When AI performs semantic analysis, it reads file content locally for reasoning and answering. For many consultants this is a compliance requirement — client materials cannot be uploaded to third-party platforms.
 
-所有文档和索引都在本地机器上，不依赖任何云端服务，没有隐私风险。对处理客户材料的顾问来说，这不是偏好问题——是合规底线。也支持 OneDrive 等网盘文件，首次建索引时自动下载，之后本地缓存运行，不需要持续联网。
+Cloud-synced folders (OneDrive, etc.) also work. If files are stored in a sync folder, the system auto-downloads them during indexing and search.
+
+你的原文件、知识库索引和工作缓存均保存在本地，不会被上传至任何外部平台或云端。在 AI 进行语义解读时，将从本地读取文件内容进行推理和解答。这对很多顾问来说是合规底线——客户材料不能上传第三方平台。
+
+同时也支持 OneDrive 等本地同步类网盘。若文件存放在同步盘中，建库和搜索时系统会自动从云端下载。
 
 ### 🔄 动态更新 / Dynamic updates
 
@@ -48,9 +52,15 @@ Pure keyword search fails when the same concept uses different wording (searchin
 
 ### 📈 越用越聪明 / Gets smarter with use
 
-Traditional search skills build their index once during initialization and never improve. This one only builds the minimal index on first use. Every time a file is read during a search, AI extracts 3-5 key phrases and appends them to the file's description. Over time: most-searched files get the richest descriptions (highest hit rate), rarely-accessed files don't waste preprocessing, and your actual search patterns gradually shape the index to serve you better. The quality ceiling rises with every search.
+Traditional search skills build their index once during initialization and never improve. This one only builds the minimal index on first use. Every time a file is read during a search, AI extracts 3-5 key phrases and appends them to the file's description. Over time: most-searched files get the richest descriptions (highest hit rate), rarely-accessed files don't waste preprocessing, and your actual search patterns gradually shape the index to serve you better. The quality ceiling rises with every search, and cached results make repeat searches faster over time.
 
-传统方案初始化建完索引后搜索质量就固定了，不会再提升。本 SKILL 第一次搜索时只建最基础的索引。每次搜到一个文件，AI 读完内容后提取 3-5 个关键词自动补充到文件描述中。长期效果：最常被搜的文件描述最丰富、命中率最高；不常搜的文件不浪费预处理时间；你的搜索习惯逐渐塑造出对你最友好的索引。搜索质量的**天花板随使用次数持续抬升**。
+传统方案初始化建完索引后搜索质量就固定了，不会再提升。本 SKILL 第一次搜索时只建最基础的索引。每次搜到一个文件，AI 读完内容后提取 3-5 个关键词自动补充到文件描述中。长期效果：最常被搜的文件描述最丰富、命中率最高；不常搜的文件不浪费预处理时间；你的搜索习惯逐渐塑造出对你最友好的索引。搜索质量的**天花板随使用次数持续抬升**。缓存积累后，后续搜索也会越来越快。
+
+### 🔍 缓存透明化 / Transparent cache
+
+Indexes and caches are not hidden in a black box. The skill creates bidirectional shortcuts between your original folder and the working directory — you can open them anytime to browse the index list, inspect cached extractions, or manually clean up. No guessing where files went.
+
+索引和缓存不再是黑盒子。本 SKILL 在原文件夹和 skill 工作目录之间自动建立双向链接，随时可以打开查看索引列表、翻阅提取缓存、或手动清理。你不需要猜文件去哪了。
 
 ### 🛡️ 配置不全也能跑 / Graceful degradation
 
@@ -60,18 +70,28 @@ No PDF library installed? Search still runs — PDF files just won't be found th
 
 ## 性能预期 / Performance
 
-基于真实测试数据（非理论值）的预估：
+基于真实测试数据，不同场景的耗时差异较大。**首次搜索最慢，后续搜索快很多。**
 
-| 场景 | 文件规模 | 首次耗时 | 后续 |
+| 场景 | 文件规模 | 预计耗时 | 说明 |
 |------|---------|---------|------|
-| 知识库初始化 | 120 文件（PPT/PDF/DOCX 混合，典型顾问项目） | 约 3-8 分钟 | 增量更新秒级 |
-| 知识库初始化 | 10-20 文件 | 约 30 秒-1 分钟 | 增量更新秒级 |
-| 单次搜索 | 不限 | 5-30 秒 | — |
-| 命中大文件 | 单个 PDF/PPT > 50 页 | 额外 10-30 秒 | — |
+| 知识库建索引 | 10-20 文件 | **约 2-5 分钟** | Stage 0 初始化，含索引构建 |
+| 知识库建索引 | 120 文件 | **约 10-15 分钟** | 典型顾问项目规模 |
+| 首次搜索 | 命中 5-10 文件 | **约 5-8 分钟** | 含文件提取 + AI 阅读+回答撰写 |
+| 后续搜索（有缓存） | 同上 | **约 2-4 分钟** | 跳过文件提取，直接从缓存读 |
+| 秒级搜索 | 纯文字文件 | **30 秒-2 分钟** | 问题简洁、文件为 TXT/MD 格式 |
+| 大文件额外提取 | 单个 PDF/PPT > 50 页 | **额外 3-7 分钟** | 文件提取本身占大头 |
 
-咨询顾问的项目里经常有几十页的 PDF 和上百页的 PPT——这类文件读取确实需要时间，不是 skill 有问题，是文件本身信息密度高。首次建索引时建议泡杯咖啡 🍵，日常搜索很快。
+**影响速度的最大变量：**
+- **有没有缓存？** 首次搜索要提取文件文字（2-7 分钟），后续从缓存秒读
+- **文件格式？** TXT/MD 可直接读，PDF 提取 2-3 分钟，大规模 PPTX 提取 5-7 分钟
+- **模型本身？** 不同 LLM 生成回答的速度不同，回答撰写本身需 3-4 分钟
+- **搜索复杂度？** 综合性问题（如跨文件对比）比简单查文件慢得多
 
-Based on real-world testing (not theoretical estimates): a typical consultant project with 120 mixed PPT/PDF/DOCX files takes ~3-8 minutes for the first index build. Incremental updates are instant. Single searches take 5-30 seconds (longer if they find 50+ page files — that's the file's density, not the skill's slowness).
+**耗时因素（从慢到快）：**
+大文件/图片/pdf/ppt 首次读取及缓存 >> AI 阅读及推理回答综合性问题 >> 简单数据/事实问题或文件定位搜索
+
+**Time factors (slowest to fastest):**
+First-time extraction of large files, images, PDFs, and PPTs >> AI reading & reasoning for complex questions >> Simple fact lookups or file-location searches
 
 ## Install / 安装
 
