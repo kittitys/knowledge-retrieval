@@ -61,7 +61,13 @@
 
 ### 🔑 越用越聪明
 
-传统方案：初始化跑 30 分钟建好索引 → 之后搜索质量固定了。
+传统方案建完索引后搜索质量就固定了。我们第一次搜索只建最基础的索引，每次搜到一个文件后顺手更新它的描述。最常被搜的文件描述最丰富、命中率最高；不常搜的文件不浪费预处理时间。**越用越聪明，越用越快。**
+
+### 🔑 缓存透明化
+
+索引和缓存不再是黑盒子。本 SKILL 在原文件夹和 skill 工作目录之间自动建立双向链接，随时可以打开查看索引列表、翻阅提取缓存、或手动清理。你不需要猜文件去哪了。
+
+### 🛡️ 配置不全也能跑传统方案：初始化跑 30 分钟建好索引 → 之后搜索质量固定了。
 
 我们：**第一次搜索时只建最基础的索引。** 每次你搜到一个文件，AI 读完内容后会顺手更新它的描述。随着使用：
 
@@ -171,15 +177,19 @@ New files are discovered on the next search. Modified files auto-refresh. No nee
 
 ### Dual-channel search
 
-AI expands your query into synonyms, then hands it to a lightweight keyword index for precision matching. You don't need to guess what words the author used.
+Pure keyword search fails when the same concept uses different wording — searching "ROI" won't find files titled "投资回报率". Pure semantic search is fuzzy. Our approach: AI first expands your query into up to 20 synonyms, then hands it to a lightweight keyword index for precision matching. Two channels, one combined result — you don't need to guess what words the author used.
 
-### Gets smarter with use
+### Gets smarter — and faster — with use
 
-Only the minimal index is built on first use. Every search improves it. Most-searched files get the richest descriptions.
+Traditional skills build their index once during initialization and never improve. This one only builds the minimal index on first use. Every time a file is read during a search, AI extracts 3-5 key phrases and appends them to the file's description. Over time: most-searched files get the richest descriptions, rarely-accessed files don't waste preprocessing. Cached results make repeat searches faster.
+
+### 🔍 Transparent cache
+
+Indexes and caches are not hidden in a black box. The skill creates bidirectional shortcuts between your original folder and the working directory — you can open them anytime to browse the index list, inspect cached extractions, or manually clean up. No guessing where files went.
 
 ### Graceful degradation
 
-No PDF library? Search still runs, just skips PDFs. BM25 corrupted? Falls back to AI semantic matching.
+No PDF library installed? Search still runs — PDF files just won't be found this time. BM25 index corrupted? Falls back to pure AI semantic matching automatically. No matching files at all? AI honestly reports nothing found — no hallucination. Every failure path has a defined fallback behavior.
 
 ## Quick start
 
