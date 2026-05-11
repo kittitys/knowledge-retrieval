@@ -1,4 +1,4 @@
-[![ClawHub](https://img.shields.io/badge/ClawHub-v3.0.5-blue)](https://clawhub.ai/package/local-knowledge-retrieval)
+[![ClawHub](https://img.shields.io/badge/ClawHub-v3.1.2-blue)](https://clawhub.ai/package/local-knowledge-retrieval)
 
 # knowledge-retrieval — 本地知识库检索 Skill
 
