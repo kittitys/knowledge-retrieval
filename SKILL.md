@@ -95,20 +95,19 @@ First-time extraction of large files, images, PDFs, and PPTs >> AI reading & rea
 
 ### ⏱️ 超时说明
 
-当前 OpenClaw 环境下，子代理分析任务默认 timeout 约 600 秒（10 分钟），主 session 无硬性限制但单步操作也受上下文窗口影响。
+当前 OpenClaw 环境下，子代理任务默认 timeout 约 600 秒（10 分钟）。首次建索引时如果文件夹过大（几百个文件、大小超 10G），可能耗时 30 分钟以上，容易超时中断。
 
-**超时风险最高的情况：** 首次建索引时塞入大量文件（如几百个 PPT/PDF，大小超过 10G），单次 Stage 0 可能跑 30 分钟以上，几乎必然超时。
+**根据实测数据，建索引耗时大致如下：**
+- 一个 120 页混合文档的顾问项目文件夹 → **约 10-15 分钟**（安全区内）
+- 含大量大文件的文件夹（> 500 个文件 / 超 10G）→ **可能超过 30 分钟**（易超时）
 
-**推荐的大库策略：**
-1. 按客户/项目/年度拆成**独立子文件夹**，每批不超过 **50 个文件或 500MB**
-2. 每批独立跑一次建索引命令，各批的索引互不冲突
-3. 搜索时根据问题定位到对应子目录
+**稳妥的做法：** 大文件夹拆成多个独立子文件夹，按客户/项目/年度分类，每个独立建索引、独立使用。例如 500 个文件分 5 个客户文件夹，每个约 100 文件、10 分钟 → 单次不会超时。如果你有一个含 100+ 文件的文件夹（如项目文档），实测是可以一次建完的。
 
-示例：一个含 40 个子文件夹、500 个文件的顾问项目文件夹，拆成 10 批执行，每批约 5 分钟 → 每步都在 timeout 安全区内。
+注意：不同文件夹的索引各自独立，当前版本暂不支持跨文件夹搜索。请根据问题选择对应的知识库。
 
 ### ⏱️ Timeout note
 
-The default sub-agent timeout is ~600 seconds (10 minutes). Indexing hundreds of mixed PPT/PDF files (10GB+) in one pass can take 30+ minutes — well beyond the limit. **Split large knowledge bases into batches of ~50 files or 500MB each**, organized by client/project/year, and run each batch independently. Search by targeting the relevant subfolder.
+The default sub-agent timeout is ~600 seconds (10 minutes). Indexing a typical consultant project folder (120 mixed files) takes ~10-15 minutes, which is safe. Folders with 500+ files or 10GB+ may exceed 30 minutes and time out. **Split large folders into separate client/project/year directories**, each indexed and searched independently. Cross-folder search is not yet supported — select the relevant knowledge base for each query.
 
 ## Install / 安装
 
