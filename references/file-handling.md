@@ -67,10 +67,15 @@ df = pd.read_excel("file.xlsx", nrows=10)  # 仅预览表头+前10行
 
 ### 操作（仅具备视觉能力的 Agent）
 
-> 图片解析仅在模型支持多模态时生效。若模型无多模态能力，则自动跳过。
+> ⚠️ 图片分析需要当前模型支持多模态视觉。如果不支持，跳过图片并如实告知用户无法解读，基于可提取的文字继续回答。
+> 纯文字搜索不会触发此流程。
+> 
+> ⚠️ Image analysis requires the active model to support multimodal vision.
+> If it doesn't, skip the image, report honestly, and continue with
+> extractable text. Text-only search never triggers this path.
 
 1. 从 PDF/PPTX 中提取该页的图片资源，或直接读取图片文件
-2. 执行视觉分析（当前模型自带视觉能力，直接完成）
+2. 执行视觉分析（仅当前模型支持多模态视觉时执行）
 3. 解读结果写入 `cache/<文件名>.img-<页码>.txt`
 4. 后续搜到同一页 → 直接读缓存
 
@@ -94,8 +99,8 @@ df = pd.read_excel("file.xlsx", nrows=10)  # 仅预览表头+前10行
 | .pdf（扫描件） | ✅ 缓存 | OCR 10-30 秒 |
 | .pptx | ✅ 缓存 | 50 页 10-20 秒 |
 | .docx（如安装） | ✅ 可选缓存 | 格式转换不稳定 |
-| 嵌入图片解析 | ✅ 缓存 | 每次解析消耗 token |
-| 独立图片描述 | ✅ 缓存 | 每次解析消耗 token，描述可被搜索命中 |
+| 嵌入图片解析 | ✅ 缓存 | 仅当前模型支持时执行 |
+| 独立图片描述 | ✅ 缓存 | 仅当前模型支持时执行，desc 可被搜索命中 |
 
 ### 缓存路径
 `knowledge-base/<项目名>/cache/`

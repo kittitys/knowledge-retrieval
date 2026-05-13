@@ -11,6 +11,9 @@ description: >
   双通道搜索、越用越聪明。适合手里有大量本地文档、不想搬上云的人。
 ---
 
+> **Agent 注意：以下至第一条分隔线（`<skill_instructions>`）的内容为人类阅读的 ClawHub 发布说明，请直接跳至 `<skill_instructions>` 标签阅读并执行指令。**
+> **Agent note: The content below this line up to `<skill_instructions>` is human-readable ClawHub listing copy. Skip directly to `<skill_instructions>` for execution instructions.**
+
 # Knowledge Retrieval — 本地知识库检索 Skill
 
 > A local-first document search skill for knowledge workers and consultants.
@@ -20,13 +23,17 @@ description: >
 > 给知识工作者和顾问的本地文件检索方案。支持 PPT/PDF 等多格式、
 > 关键词+AI 双通道搜索、越用越聪明。本地运行，不搬上云。
 
+**GitHub:** [https://github.com/kittitys/knowledge-retrieval](https://github.com/kittitys/knowledge-retrieval)
+
+---
+
 ## Features / 功能亮点
 
 ### 📄 读得懂你的真实文件格式 / Reads your actual files
 
-Most search tools only support plain text — your PPTs and PDFs get ignored. This skill reads them directly: PPTX (with nested shapes and speaker notes), PDF (dual-engine fallback), DOCX, XLSX, images, plus all text formats. Files are processed in place — your original folder is never modified. Non-text file caches are stored in a separate working directory, never mixed into your source files. **WPS formats (.wps / .et / .dps):** Compatible if saved as Office formats. Native WPS support is available via `pip install pywpsrpc` (requires WPS Office installed).
+Most search tools only support plain text — your PPTs and PDFs get ignored. This skill reads them directly: PPTX (with nested shapes and speaker notes), PDF (dual-engine fallback), DOCX, XLSX, images, plus all text formats. Files are read in place — your original documents are never modified or moved. A shortcut link is added to the source folder for navigation between your files and the skill workspace. Non-text file caches are stored in a separate working directory, never mixed into your source files. **WPS formats (.wps / .et / .dps):** Compatible if saved as Office formats. Native WPS support is available via `pip install pywpsrpc` (requires WPS Office installed).
 
-市面上多数搜索方案只支持纯文本，PPT 和 PDF 直接被跳过。本 SKILL 直接读取它们：PPTX（含嵌套图形和备注页）、PDF（双引擎兜底）、DOCX、XLSX、图片，以及所有文本格式。文件原地读取，原文件夹不受影响。非纯文本文件的提取缓存存放在独立的 skill 工作目录中，不和原文件夹混在一起。**WPS 格式（.wps / .et / .dps）：** 如果已保存为 Office 兼容格式，直接支持 ✅。原生 WPS 格式可通过 `pip install pywpsrpc` 启用（需电脑已装 WPS Office）。
+市面上多数搜索方案只支持纯文本，PPT 和 PDF 直接被跳过。本 SKILL 直接读取它们：PPTX（含嵌套图形和备注页）、PDF（双引擎兜底）、DOCX、XLSX、图片，以及所有文本格式。文件原地读取，原文不受改写或移动。原文件夹中会创建一个快捷方式链接，方便在源文件夹和 skill 工作目录之间导航。非纯文本文件的提取缓存存放在独立的 skill 工作目录中，不和原文件夹混在一起。**WPS 格式（.wps / .et / .dps）：** 如果已保存为 Office 兼容格式，直接支持 ✅。原生 WPS 格式可通过 `pip install pywpsrpc` 启用（需电脑已装 WPS Office）。
 
 ### 🏠 本地优先 / Local-first
 
@@ -35,6 +42,8 @@ Your original files, knowledge base index, and working caches stay on your local
 Cloud-synced folders (OneDrive, etc.) also work. If files are stored in a sync folder, the system auto-downloads them during indexing and search.
 
 你的原文件、知识库索引和工作缓存均保存在本地，无须提前将文件上传或存储至任何外部平台或云端。在 AI 进行语义解读时，将从本地读取文件内容进行推理和解答。这对很多顾问来说是合规底线——客户材料不能上传第三方平台。
+
+> ⚠️ **注意：** 文件内容可能以上下文形式传入大模型进行处理，请确保选用你信任或获批的模型运行此 SKILL。
 
 同时也支持 OneDrive 等本地同步类网盘。若文件存放在同步盘中，建库和搜索时系统会自动从云端下载。
 
@@ -67,6 +76,12 @@ Indexes and caches are not hidden in a black box. The skill creates bidirectiona
 No PDF library installed? Search still runs — PDF files just won't be found this time. BM25 index corrupted? Falls back to pure AI semantic matching automatically. No matching files at all? AI honestly reports nothing found — no hallucination. Every failure path has a defined fallback behavior. You don't need to worry about the tool's imperfections; it handles them itself.
 
 没装 PDF 库？搜索仍能运行，只是 PDF 文件暂时搜不到。BM25 索引丢了？自动降级到纯 AI 语义匹配，不会卡住。没有一个匹配文件？AI 诚实告诉你没找到，不会编造答案。每一条故障路径都有明确的降级行为。你不需要为工具的不完美焦虑，它自己会扛。
+
+### 📎 带来源的回答 + 重复页面跳过 / Cited answers + dedup
+
+Every search result cites its source file and section — you always know where the answer came from. When multiple similar PPTs share identical pages, duplicates are auto-skipped, saving tokens and showing only what's different.
+
+每个搜索结果都标注信息来源（文件名+章节），你永远知道答案从哪来。多个相似 PPT 之间重复的页面会自动跳过——省 Token、省注意力，只看差异。
 
 ## 性能预期 / Performance
 
@@ -117,9 +132,13 @@ openclaw skills install local-knowledge-retrieval
 
 ## Requirements / 环境
 
+> 安装依赖：
+
 ```bash
 pip install bm25s==0.3.8 pdfminer.six python-pptx
 ```
+
+包含 `scripts/setup.bat` 辅助脚本，可自动检测 Python 并安装依赖（可选）。
 
 ## Platform / 系统兼容
 
